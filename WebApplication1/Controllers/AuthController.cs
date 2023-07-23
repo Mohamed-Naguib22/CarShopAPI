@@ -1,5 +1,5 @@
-﻿using CarShopAPI.Models;
-using CarShopAPI.Services;
+﻿using CarShopAPI.Interfaces;
+using CarShopAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarShopAPI.Controllers

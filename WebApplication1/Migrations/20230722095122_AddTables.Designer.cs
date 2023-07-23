@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarShopAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230720231415_AddTables")]
+    [Migration("20230722095122_AddTables")]
     partial class AddTables
     {
         /// <inheritdoc />
@@ -115,58 +115,6 @@ namespace CarShopAPI.Migrations
                     b.HasKey("BodyTypeId");
 
                     b.ToTable("BodyTypes");
-                });
-
-            modelBuilder.Entity("CarShopAPI.Models.Car", b =>
-                {
-                    b.Property<int>("CarId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CarId"));
-
-                    b.Property<int>("BodyTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<bool>("IsNew")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ManufacturerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Model")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<string>("SellerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("StateId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
-
-                    b.HasKey("CarId");
-
-                    b.HasIndex("BodyTypeId");
-
-                    b.HasIndex("ManufacturerId");
-
-                    b.HasIndex("SellerId");
-
-                    b.HasIndex("StateId");
-
-                    b.ToTable("Cars");
                 });
 
             modelBuilder.Entity("CarShopAPI.Models.Manufacturer", b =>
@@ -336,41 +284,6 @@ namespace CarShopAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("CarShopAPI.Models.Car", b =>
-                {
-                    b.HasOne("CarShopAPI.Models.BodyType", "BodyType")
-                        .WithMany("Cars")
-                        .HasForeignKey("BodyTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CarShopAPI.Models.Manufacturer", "Manufacturer")
-                        .WithMany("Cars")
-                        .HasForeignKey("ManufacturerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CarShopAPI.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany("Cars")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CarShopAPI.Models.State", "State")
-                        .WithMany("Cars")
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-
-                    b.Navigation("BodyType");
-
-                    b.Navigation("Manufacturer");
-
-                    b.Navigation("State");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -420,26 +333,6 @@ namespace CarShopAPI.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("CarShopAPI.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Cars");
-                });
-
-            modelBuilder.Entity("CarShopAPI.Models.BodyType", b =>
-                {
-                    b.Navigation("Cars");
-                });
-
-            modelBuilder.Entity("CarShopAPI.Models.Manufacturer", b =>
-                {
-                    b.Navigation("Cars");
-                });
-
-            modelBuilder.Entity("CarShopAPI.Models.State", b =>
-                {
-                    b.Navigation("Cars");
                 });
 #pragma warning restore 612, 618
         }

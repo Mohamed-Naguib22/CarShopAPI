@@ -10,28 +10,25 @@ namespace CarShopAPI.Services
         private readonly ApplicationDbContext _dbContext;
         public BodyTypeService(ApplicationDbContext dbContext)
         {
-           _dbContext = dbContext;
+            _dbContext = dbContext;
         }
-        public void GetId(Car car)
+        public async Task<int> GetIdByNameAsync(string bodyTypeName)
         {
-            var name = car.BodyType.Name.ToString().Trim();
+            var name = bodyTypeName.Trim().ToLower();
 
-            var bodyType = _dbContext.BodyTypes
-                .FirstOrDefault(x => EF.Functions.Like(x.Name, $"{name}%"));
+            var bodyType = await _dbContext.BodyTypes
+                .FirstOrDefaultAsync(x => x.Name.ToLower() == name);
 
             if (bodyType is null)
             {
-                car.BodyTypeId = -1;
+                return -1;
             }
-            else
-            {
-                car.BodyTypeId = bodyType.BodyTypeId;
-            }
+            return bodyType.BodyTypeId;
         }
-        public List<string> GetAll()
+        public async Task<List<string>> GetAllAsync()
         {
-            var bodyTypes = _dbContext.BodyTypes.OrderBy(x => x.Name)
-                .Select(x => x.Name).ToList();
+            var bodyTypes = await _dbContext.BodyTypes.OrderBy(x => x.Name)
+                .Select(x => x.Name).ToListAsync();
             return bodyTypes;
         }
     }

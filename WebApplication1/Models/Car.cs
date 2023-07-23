@@ -24,6 +24,8 @@ namespace CarShopAPI.Models
         [Required, MaxLength(300, ErrorMessage = "Description can not be more than 300 characters")]
         public string Description { get; set; }
         [Required]
+        public string Warranty { get; set; }
+        [Required]
         public bool IsNew { get; set; }
         public int BodyTypeId { get; set; }
         [Required]
@@ -39,7 +41,6 @@ namespace CarShopAPI.Models
         [ValidateNever, JsonIgnore]
         public ApplicationUser ApplicationUser { get; set; }
         [ValidateNever]
-        [DisplayName("Image")]
         [DataType(DataType.ImageUrl)]
         public string Img_url { get; set; }
         [NotMapped, ValidateNever, JsonIgnore]

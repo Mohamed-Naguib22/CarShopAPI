@@ -2,6 +2,7 @@
 using CarShopAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using CarShopAPI.Interfaces;
+using CarShopAPI.Extensions;
 
 namespace CarShopAPI.Controllers
 {
@@ -15,10 +16,10 @@ namespace CarShopAPI.Controllers
             _carService = carService;
         }
 
-        [HttpGet("page/{pageNumber}")]
-        public async Task<IActionResult> GetAllCarsAsync(int pageNumber)
+        [HttpGet]
+        public async Task<IActionResult> GetAllCarsAsync()
         {
-            var cars = await _carService.GetAllCarsAsync(pageNumber);
+            var cars = await _carService.GetAllCarsAsync();
             return Ok(cars);
         }
 
@@ -30,7 +31,8 @@ namespace CarShopAPI.Controllers
             {
                 return NotFound(new { Message ="Car is Not Found"});
             }
-            return Ok(car);
+            var cars = await _carService.GetRelatedCarsAsync(car);
+            return Ok(new { Car = car , RelatedCars = cars});
         }
 
         [HttpPost]
@@ -48,7 +50,7 @@ namespace CarShopAPI.Controllers
                 return BadRequest(new { Message =  "Please Enter Valid Car Data" });
             }
 
-            return Ok(new { Message = "Car added successfully" , Car = car });
+            return Ok(new { Message = "Car added successfully" });
         }
 
         [HttpPut("{carId}")]

@@ -16,9 +16,9 @@ namespace CarShopAPI.Controllers
             _stateService = stateService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var states = _stateService.GetAll();
+            var states = await _stateService.GetAllAsync();
 
             return Ok(states);
         }

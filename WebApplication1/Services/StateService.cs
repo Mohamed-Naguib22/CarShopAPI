@@ -12,26 +12,26 @@ namespace CarShopAPI.Services
         {
            _dbContext = dbContext;
         }
-        public void GetId(Car car)
+        public async Task<int> GetIdByNameAsync(string stateName)
         {
-            var name = car.State.Name.ToString().Trim();
+            var name = stateName.Trim().ToLower();
 
-            var state = _dbContext.States
-                .FirstOrDefault(x => EF.Functions.Like(x.Name, $"{name}%"));
+            var state = await _dbContext.States
+                .FirstOrDefaultAsync(x => x.Name.ToLower() == name);
 
             if (state is null)
             {
-                car.StateId = -1;
+                return -1;
             }
             else
             {
-                car.StateId = state.StateId;
+                return state.StateId;
             }
         }
-        public List<string> GetAll()
+        public async Task<List<string>> GetAllAsync()
         {
-            var states = _dbContext.States.OrderBy(x => x.Name)
-                .Select(x => x.Name).ToList();
+            var states = await _dbContext.States.OrderBy(x => x.Name)
+                .Select(x => x.Name).ToListAsync();
             return states;
         }
     }

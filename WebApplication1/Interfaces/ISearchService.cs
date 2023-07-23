@@ -5,6 +5,6 @@ namespace CarShopAPI.Interfaces
 {
     public interface ISearchService
     {
-        Task<object> Filter(CarFilter filter);
+        Task<IEnumerable<CarDto>> Filter(CarFilter filter, int pageNumber);
     }
 }

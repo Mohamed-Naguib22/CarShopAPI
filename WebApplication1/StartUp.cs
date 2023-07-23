@@ -16,6 +16,7 @@ using CarShopAPI.Services;
 using CarShopAPI.Interfaces;
 using CarShopAPI.Implementation;
 using CarShopAPI.Implementation.Interfaces;
+using CarShopAPI.Filters;
 
 namespace CarShopAPI
 {
@@ -38,11 +39,14 @@ namespace CarShopAPI
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICarService, CarService>();
+            services.AddScoped<IYearService, YearService>();
             services.AddScoped<IEntityService<State>, StateService>();
             services.AddScoped<IEntityService<Manufacturer>, ManufacturerService>();
             services.AddScoped<IEntityService<BodyType>, BodyTypeService>();
             services.AddScoped<ISearchService, SearchService>();
             services.AddScoped<IImageService<Car>, CarImageService>();
+            services.AddScoped<IImageService<ApplicationUser>, UserImageService>();
+            services.AddScoped<ICarFilterStrategyFactory, CarFilterStrategyFactory>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))

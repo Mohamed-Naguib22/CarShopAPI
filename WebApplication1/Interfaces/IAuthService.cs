@@ -1,7 +1,7 @@
 ﻿using CarShopAPI.Models;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace CarShopAPI.Services
+namespace CarShopAPI.Interfaces
 {
     public interface IAuthService
     {

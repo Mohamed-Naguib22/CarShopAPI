@@ -5,14 +5,14 @@
 namespace CarShopAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class AddImgaeTable : Migration
+    public partial class AddUserImageColumn : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
                 name: "Img_url",
-                table: "Cars",
+                table: "AspNetUsers",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
@@ -23,7 +23,7 @@ namespace CarShopAPI.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Img_url",
-                table: "Cars");
+                table: "AspNetUsers");
         }
     }
 }

@@ -15,9 +15,9 @@ namespace CarShopAPI.Controllers
             _bodyTypeService = bodyTypeService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var bodyTypes = _bodyTypeService.GetAll();
+            var bodyTypes = await _bodyTypeService.GetAllAsync();
 
             return Ok(bodyTypes);
         }

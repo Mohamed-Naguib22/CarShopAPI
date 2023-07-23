@@ -1,5 +1,5 @@
 ﻿using CarShopAPI.Data;
-using CarShopAPI.Helpers;
+using CarShopAPI.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,17 +9,15 @@ namespace CarShopAPI.Controllers
     [Route("api/[controller]")]
     public class YearController : ControllerBase
     {
-        private readonly ApplicationDbContext _dbContext;
-        public YearController(ApplicationDbContext dbContext)
+        private readonly IYearService _yearService;
+        public YearController(IYearService yearService)
         {
-            _dbContext = dbContext;
+            _yearService = yearService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetYearsAsync()
         {
-            var years = await _dbContext.Cars.Select(x => x.Year)
-                .Distinct().ToListAsync();
-            
+            var years = await _yearService.GetYears().ToListAsync();
             return Ok(years);
         }
     }

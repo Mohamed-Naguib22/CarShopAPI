@@ -4,7 +4,7 @@ namespace CarShopAPI.Interfaces
 {
     public interface IEntityService<T>
     {
-        void GetId(Car car);
-        List<string> GetAll();
+        Task<int> GetIdByNameAsync(string name);
+        Task<List<string>> GetAllAsync();
     }
 }

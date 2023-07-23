@@ -18,10 +18,10 @@ namespace CarShopAPI.Controllers
             _searchService = searchService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Filter([FromBody] CarFilter filter)
+        [HttpGet("{pageNumber}")]
+        public async Task<IActionResult> Filter([FromBody] CarFilter filter, int pageNumber)
         {
-            var filteredCars = await _searchService.Filter(filter);
+            var filteredCars = await _searchService.Filter(filter, pageNumber);
             return Ok(filteredCars);
         }
     }

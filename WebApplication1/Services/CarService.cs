@@ -1,12 +1,10 @@
 ﻿using CarShopAPI.Data;
-using CarShopAPI.Extensions;
 using CarShopAPI.Helpers;
 using CarShopAPI.Implementation.Interfaces;
 using CarShopAPI.Interfaces;
 using CarShopAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace CarShopAPI.Services
 {
@@ -28,68 +26,68 @@ namespace CarShopAPI.Services
             _carImageService = carImageService;
             _carImageService = carImageService;
         }
-        public async Task<object> GetAllCarsAsync(int pageNumber)
+        private async Task<IEnumerable<CarDto>> GetRelatedCarsAsync(CarDto car)
         {
-            var allCars = await _dbContext.Cars
-                .Include(c => c.BodyType)
-                .Include(c => c.Manufacturer)
-                .Include(c => c.State)
-                 .Select(car => new
-                 {
-                     car.CarId,
-                     car.Model,
-                     car.Description,
-                     car.Year,
-                     car.Price,
-                     car.IsNew,
-                     car.SellerId,
-                     car.Img_url,
-                     BodyType = car.BodyType.Name,
-                     State = car.State.Name,
-                     Manufacturer = car.Manufacturer.Name
-                 })
-                 .ToListAsync();
+            var allCars = await GetAllCarsAsync();
 
-            return allCars.Pagenate(pageNumber, 30);
+            var relatedCars = allCars.Where(x => x.BodyType.Equals(car.BodyType))
+                .Take(8).Except(new List<CarDto> { car });
+
+            return relatedCars;
         }
-        public async Task<object> GetCarByIdAsync(int carId)
+        public IQueryable<Car> GetCarsWithRelatedEntities()
         {
-            var car = await _dbContext.Cars
-                .Where(x => x.CarId == carId)
+            return _dbContext.Cars
                 .Include(c => c.BodyType)
                 .Include(c => c.Manufacturer)
                 .Include(c => c.State)
-                 .Select(car => new
-                 {
-                     car.CarId,
-                     car.Model,
-                     car.Description,
-                     car.Year,
-                     car.Price,
-                     car.IsNew,
-                     car.SellerId,
-                     BodyType = car.BodyType.Name,
-                     State = car.State.Name,
-                     Manufacturer = car.Manufacturer.Name
-                 })
-                .FirstOrDefaultAsync();
+                .Include(c => c.ApplicationUser);
+        }
+        public async Task<IEnumerable<CarDto>> GetAllCarsAsync()
+        {
+            var allCars = await GetCarsWithRelatedEntities()
+                 .Select(car => CarMapper.MapCarToDto(car)).ToListAsync();
 
-            return car;
+            return allCars;
+        }
+        public async Task<CarDto> GetCarByIdAsync(int carId)
+        {
+            var car = await GetCarsWithRelatedEntities()
+                 .FirstOrDefaultAsync(car => car.CarId == carId);
+
+            if (car is null)
+            {
+                return null;
+            }
+            var carDto = CarMapper.MapCarToDto(car);
+            return carDto;
         }
         public async Task<bool> AddCarAsync(Car car)
         {
-            _bodyTypeService.GetId(car);
-            _stateService.GetId(car);
-            _manufacturerService.GetId(car);
+            int bodyTypeId = await _bodyTypeService.GetIdByNameAsync(car.BodyType.Name);
+            int stateId = await _stateService.GetIdByNameAsync(car.State.Name);
+            int manufacturerId = await _manufacturerService.GetIdByNameAsync(car.Manufacturer.Name);
+            string imgUrl = _carImageService.GetImageUrl(car);
 
-            if(car.BodyTypeId == -1|| car.StateId == -1 || car.ManufacturerId == -1)
+            if (bodyTypeId == -1 || stateId == -1 || manufacturerId == -1)
             {
                 return false;
             }
-            
-            _carImageService.SetImage(car);
 
-            await _dbContext.AddAsync(car);
+            await _dbContext.AddAsync(new Car
+            {
+                Model = car.Model,
+                Description = car.Description,
+                Year = car.Year,
+                Price = car.Price,
+                IsNew = car.IsNew,
+                Warranty = car.Warranty,
+                SellerId = car.SellerId,
+                BodyTypeId = bodyTypeId,
+                StateId = stateId,
+                ManufacturerId = manufacturerId,
+                Img_url = imgUrl,
+            });
             await _dbContext.SaveChangesAsync();
             return true;
         }
@@ -101,16 +99,14 @@ namespace CarShopAPI.Services
             {
                 return false;
             }
-            _bodyTypeService.GetId(newCar);
-            _stateService.GetId(newCar);
-            _manufacturerService.GetId(newCar);
+            int bodyTypeId = await _bodyTypeService.GetIdByNameAsync(car.BodyType.Name);
+            int stateId = await _stateService.GetIdByNameAsync(car.State.Name);
+            int manufacturerId = await _manufacturerService.GetIdByNameAsync(car.Manufacturer.Name);
 
-            if (car.BodyTypeId == -1 || car.StateId == -1 || car.ManufacturerId == -1)
+            if (bodyTypeId == -1 || stateId == -1 || manufacturerId == -1)
             {
                 return false;
             }
-
-            _carImageService.UpdateImage(car);
 
             car.Year = newCar.Year;
             car.IsNew = newCar.IsNew;
@@ -133,7 +129,7 @@ namespace CarShopAPI.Services
             {
                 return false;
             }
-            
+
             _carImageService.DeleteImage(car);
             _dbContext.Cars.Remove(car);
             await _dbContext.SaveChangesAsync();

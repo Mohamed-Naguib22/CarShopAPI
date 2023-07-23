@@ -1,4 +1,5 @@
 ﻿using CarShopAPI.Helpers;
+using CarShopAPI.Interfaces;
 using CarShopAPI.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;

@@ -1,66 +1,67 @@
 ﻿using CarShopAPI.Implementation.Interfaces;
 using CarShopAPI.Models;
+
 namespace CarShopAPI.Services
 {
-    public class CarImageService : IImageService<Car>
+    public class UserImageService: IImageService<ApplicationUser>
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public CarImageService(IWebHostEnvironment webHostEnvironment)
+
+        public UserImageService(IWebHostEnvironment webHostEnvironment)
         {
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public string GetImageUrl(Car car)
+        public string GetImageUrl(ApplicationUser user)
         {
-            if (car.ImgFile == null)
+            if (user.ImgFile == null)
             {
                 return "\\images\\No_Image.png";
             }
             else
             {
-                string imgExtension = Path.GetExtension(car.ImgFile.FileName);
+                string imgExtension = Path.GetExtension(user.ImgFile.FileName);
                 Guid imgGuid = Guid.NewGuid();
                 string imgName = imgGuid + imgExtension;
                 string imgUrl = "\\images\\" + imgName;
-                
-                string imgPath = _webHostEnvironment.WebRootPath + imgUrl;
-                using (var imgStream = new FileStream(imgPath, FileMode.Create))
-                {
-                    car.ImgFile.CopyTo(imgStream);
-                }
-                return car.Img_url = imgUrl;
-            }
-        }
-        public void SetImage(Car car)
-        {
-            if (car.ImgFile == null)
-            {
-                car.Img_url = "\\images\\No_Image.png";
-            }
-            else
-            {
-                string imgExtension = Path.GetExtension(car.ImgFile.FileName);
-                Guid imgGuid = Guid.NewGuid();
-                string imgName = imgGuid + imgExtension;
-                string imgUrl = "\\images\\" + imgName;
-                car.Img_url = imgUrl;
 
                 string imgPath = _webHostEnvironment.WebRootPath + imgUrl;
                 using (var imgStream = new FileStream(imgPath, FileMode.Create))
                 {
-                    car.ImgFile.CopyTo(imgStream);
+                    user.ImgFile.CopyTo(imgStream);
+                }
+                return user.Img_url = imgUrl;
+            }
+        }
+        public void SetImage(ApplicationUser user)
+        {
+            if (user.ImgFile == null)
+            {
+                user.Img_url = "\\images\\No_Image.png";
+            }
+
+            else
+            {
+                DeleteImage(user);
+                string imgExtension = Path.GetExtension(user.ImgFile.FileName);
+                Guid imgGuid = Guid.NewGuid();
+                string imgName = imgGuid + imgExtension;
+                string imgUrl = "\\images\\" + imgName;
+                user.Img_url = imgUrl;
+
+                string imgPath = _webHostEnvironment.WebRootPath + imgUrl;
+                using (var imgStream = new FileStream(imgPath, FileMode.Create))
+                {
+                    user.ImgFile.CopyTo(imgStream);
                 }
             }
         }
-        public void DeleteImage(Car car)
+        public void DeleteImage(ApplicationUser user)
         {
-            if (car.Img_url != @"\images\No_Image.png")
+            var imgOldPath = _webHostEnvironment.WebRootPath + user.Img_url;
+            if (File.Exists(imgOldPath))
             {
-                var imgOldPath = _webHostEnvironment.WebRootPath + car.Img_url;
-                if (File.Exists(imgOldPath))
-                {
-                    File.Delete(imgOldPath);
-                }
+                File.Delete(imgOldPath);
             }
         }
     }

@@ -15,9 +15,9 @@ namespace CarShopAPI.Controllers
             _manufacturerService = manufacturerService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var manufacturers = _manufacturerService.GetAll();
+            var manufacturers = await _manufacturerService.GetAllAsync();
 
             return Ok(manufacturers);
         }
