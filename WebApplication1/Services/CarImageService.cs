@@ -31,15 +31,16 @@ namespace CarShopAPI.Services
                 return car.Img_url = imgUrl;
             }
         }
-        public void SetImage(Car car)
+        public void SetImage(Car car, IFormFile? imgFile)
         {
-            if (car.ImgFile == null)
+            if (imgFile == null)
             {
                 car.Img_url = "\\images\\No_Image.png";
             }
             else
             {
-                string imgExtension = Path.GetExtension(car.ImgFile.FileName);
+                DeleteImage(car);
+                string imgExtension = Path.GetExtension(imgFile.FileName);
                 Guid imgGuid = Guid.NewGuid();
                 string imgName = imgGuid + imgExtension;
                 string imgUrl = "\\images\\" + imgName;
@@ -48,13 +49,13 @@ namespace CarShopAPI.Services
                 string imgPath = _webHostEnvironment.WebRootPath + imgUrl;
                 using (var imgStream = new FileStream(imgPath, FileMode.Create))
                 {
-                    car.ImgFile.CopyTo(imgStream);
+                    imgFile.CopyTo(imgStream);
                 }
             }
         }
         public void DeleteImage(Car car)
         {
-            if (car.Img_url != @"\images\No_Image.png")
+            if (!string.IsNullOrEmpty(car.Img_url))
             {
                 var imgOldPath = _webHostEnvironment.WebRootPath + car.Img_url;
                 if (File.Exists(imgOldPath))

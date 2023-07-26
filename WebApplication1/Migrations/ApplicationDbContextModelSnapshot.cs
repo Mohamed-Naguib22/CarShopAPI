@@ -111,9 +111,12 @@ namespace CarShopAPI.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("BodyTypeId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("BodyTypes");
                 });
@@ -188,9 +191,12 @@ namespace CarShopAPI.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ManufacturerId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Manufacturers");
                 });
@@ -205,9 +211,12 @@ namespace CarShopAPI.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("StateId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("States");
                 });

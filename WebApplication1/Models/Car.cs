@@ -28,19 +28,20 @@ namespace CarShopAPI.Models
         [Required]
         public bool IsNew { get; set; }
         public int BodyTypeId { get; set; }
-        [Required]
+        [Required, JsonIgnore]
         public BodyType BodyType { get; set; }
         public int ManufacturerId { get; set; }
-        [Required]
+        [Required, JsonIgnore]
         public Manufacturer Manufacturer { get; set; }
         public int StateId { get; set; }
-        [Required]
+        [Required, JsonIgnore]
         public State State { get; set; }
         [Required]
         public string SellerId { get; set; }
         [ValidateNever, JsonIgnore]
         public ApplicationUser ApplicationUser { get; set; }
         [ValidateNever]
+        [DisplayName("Image")]
         [DataType(DataType.ImageUrl)]
         public string Img_url { get; set; }
         [NotMapped, ValidateNever, JsonIgnore]

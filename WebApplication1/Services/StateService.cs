@@ -17,7 +17,7 @@ namespace CarShopAPI.Services
             var name = stateName.Trim().ToLower();
 
             var state = await _dbContext.States
-                .FirstOrDefaultAsync(x => x.Name.ToLower() == name);
+                .SingleOrDefaultAsync(x => x.Name.ToLower() == name);
 
             if (state is null)
             {

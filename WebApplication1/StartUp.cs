@@ -35,7 +35,9 @@ namespace CarShopAPI
 
             services.Configure<JWT>(Configuration.GetSection("JWT"));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<ApplicationUser, IdentityRole>
+                (options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICarService, CarService>();

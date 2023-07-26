@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
 namespace CarShopAPI.Models
 {
+    [Index(nameof(Name), IsUnique = true)]
     public class BodyType
     {
         [ValidateNever, JsonIgnore]

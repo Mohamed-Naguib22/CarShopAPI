@@ -44,17 +44,13 @@ namespace CarShopAPI.Controllers
                 return BadRequest(new { validationErrors });
             }
 
-            bool success = await _carService.AddCarAsync(car);
-            if (!success)
-            {
-                return BadRequest(new { Message =  "Please Enter Valid Car Data" });
-            }
+            var newCar = await _carService.AddCarAsync(car);
 
-            return Ok(new { Message = "Car added successfully" });
+            return Ok(new { Message = "Car added successfully", Car = newCar });
         }
 
         [HttpPut("{carId}")]
-        public async Task<IActionResult> UpdateCarAsync([FromBody] Car newCar, int carId)
+        public async Task<IActionResult> UpdateCarAsync([FromForm] Car newCar, int carId)
         {
             var errors = ValidationHelper<Car>.Validate(newCar);
             if (errors.Count != 0)
@@ -67,6 +63,7 @@ namespace CarShopAPI.Controllers
             {
                 return NotFound(new { Message =  "Car is Not Found" });
             }
+
             return Ok(new { Message ="Car Details Updated Successfully", Car = newCar });
         }
 

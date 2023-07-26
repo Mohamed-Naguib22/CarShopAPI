@@ -26,7 +26,7 @@ namespace CarShopAPI.Services
             _carImageService = carImageService;
             _carImageService = carImageService;
         }
-        private async Task<IEnumerable<CarDto>> GetRelatedCarsAsync(CarDto car)
+        public async Task<IEnumerable<CarDto>> GetRelatedCarsAsync(CarDto car)
         {
             var allCars = await GetAllCarsAsync();
 
@@ -55,26 +55,18 @@ namespace CarShopAPI.Services
             var car = await GetCarsWithRelatedEntities()
                  .FirstOrDefaultAsync(car => car.CarId == carId);
 
-            if (car is null)
-            {
-                return null;
-            }
             var carDto = CarMapper.MapCarToDto(car);
             return carDto;
         }
-        public async Task<bool> AddCarAsync(Car car)
+
+        public async Task<Car> AddCarAsync(Car car)
         {
             int bodyTypeId = await _bodyTypeService.GetIdByNameAsync(car.BodyType.Name);
             int stateId = await _stateService.GetIdByNameAsync(car.State.Name);
             int manufacturerId = await _manufacturerService.GetIdByNameAsync(car.Manufacturer.Name);
             string imgUrl = _carImageService.GetImageUrl(car);
 
-            if (bodyTypeId == -1 || stateId == -1 || manufacturerId == -1)
-            {
-                return false;
-            }
-
-            await _dbContext.AddAsync(new Car
+            var newCar = new Car
             {
                 Model = car.Model,
                 Description = car.Description,
@@ -87,9 +79,10 @@ namespace CarShopAPI.Services
                 StateId = stateId,
                 ManufacturerId = manufacturerId,
                 Img_url = imgUrl,
-            });
+            };
+            await _dbContext.AddAsync(newCar);
             await _dbContext.SaveChangesAsync();
-            return true;
+            return newCar;
         }
         public async Task<bool> UpdateCarAsync([FromBody] Car newCar, int carId)
         {
@@ -99,24 +92,20 @@ namespace CarShopAPI.Services
             {
                 return false;
             }
-            int bodyTypeId = await _bodyTypeService.GetIdByNameAsync(car.BodyType.Name);
-            int stateId = await _stateService.GetIdByNameAsync(car.State.Name);
-            int manufacturerId = await _manufacturerService.GetIdByNameAsync(car.Manufacturer.Name);
-
-            if (bodyTypeId == -1 || stateId == -1 || manufacturerId == -1)
-            {
-                return false;
-            }
+            int bodyTypeId = await _bodyTypeService.GetIdByNameAsync(newCar.BodyType.Name);
+            int stateId = await _stateService.GetIdByNameAsync(newCar.State.Name);
+            int manufacturerId = await _manufacturerService.GetIdByNameAsync(newCar.Manufacturer.Name);
 
             car.Year = newCar.Year;
             car.IsNew = newCar.IsNew;
+            car.Warranty = newCar.Warranty;
             car.Model = newCar.Model;
             car.Description = newCar.Description;
             car.Price = newCar.Price;
-            car.BodyTypeId = newCar.BodyTypeId;
-            car.StateId = newCar.StateId;
-            car.ManufacturerId = newCar.ManufacturerId;
-            car.Img_url = newCar.Img_url;
+            car.BodyTypeId = bodyTypeId;
+            car.StateId = stateId; 
+            car.ManufacturerId = manufacturerId;
+            _carImageService.SetImage(car, newCar.ImgFile);
 
             await _dbContext.SaveChangesAsync();
             return true;

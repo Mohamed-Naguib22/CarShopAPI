@@ -17,7 +17,7 @@ namespace CarShopAPI.Services
             var name = bodyTypeName.Trim().ToLower();
 
             var bodyType = await _dbContext.BodyTypes
-                .FirstOrDefaultAsync(x => x.Name.ToLower() == name);
+                .SingleOrDefaultAsync(x => x.Name.ToLower() == name);
 
             if (bodyType is null)
             {

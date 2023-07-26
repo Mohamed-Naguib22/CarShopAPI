@@ -3,7 +3,7 @@ using CarShopAPI.Models;
 
 namespace CarShopAPI.Services
 {
-    public class UserImageService: IImageService<ApplicationUser>
+    public class UserImageService : IImageService<ApplicationUser>
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
 
@@ -33,17 +33,16 @@ namespace CarShopAPI.Services
                 return user.Img_url = imgUrl;
             }
         }
-        public void SetImage(ApplicationUser user)
+        public void SetImage(ApplicationUser user, IFormFile? imgFile)
         {
-            if (user.ImgFile == null)
+            if (imgFile == null)
             {
                 user.Img_url = "\\images\\No_Image.png";
             }
-
             else
             {
                 DeleteImage(user);
-                string imgExtension = Path.GetExtension(user.ImgFile.FileName);
+                string imgExtension = Path.GetExtension(imgFile.FileName);
                 Guid imgGuid = Guid.NewGuid();
                 string imgName = imgGuid + imgExtension;
                 string imgUrl = "\\images\\" + imgName;
@@ -52,16 +51,19 @@ namespace CarShopAPI.Services
                 string imgPath = _webHostEnvironment.WebRootPath + imgUrl;
                 using (var imgStream = new FileStream(imgPath, FileMode.Create))
                 {
-                    user.ImgFile.CopyTo(imgStream);
+                    imgFile.CopyTo(imgStream);
                 }
             }
         }
         public void DeleteImage(ApplicationUser user)
         {
-            var imgOldPath = _webHostEnvironment.WebRootPath + user.Img_url;
-            if (File.Exists(imgOldPath))
+            if (!string.IsNullOrEmpty(user.Img_url))
             {
-                File.Delete(imgOldPath);
+                var imgOldPath = _webHostEnvironment.WebRootPath + user.Img_url;
+                if (File.Exists(imgOldPath))
+                {
+                    File.Delete(imgOldPath);
+                }
             }
         }
     }

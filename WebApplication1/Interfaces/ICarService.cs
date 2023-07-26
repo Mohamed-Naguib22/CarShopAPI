@@ -7,9 +7,10 @@ namespace CarShopAPI.Interfaces
     {
         Task<IEnumerable<CarDto>> GetAllCarsAsync();
         Task<CarDto> GetCarByIdAsync(int carId);
-        Task<bool> AddCarAsync(Car car);
+        Task<Car> AddCarAsync(Car car);
         Task<bool> UpdateCarAsync(Car newCar, int carId);
         Task<bool> RemoveCarAsync(int carId);
         IQueryable<Car> GetCarsWithRelatedEntities();
+        Task<IEnumerable<CarDto>> GetRelatedCarsAsync(CarDto car);
     }
 }

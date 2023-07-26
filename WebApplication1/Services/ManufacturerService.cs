@@ -17,7 +17,7 @@ namespace CarShopAPI.Services
             var name = manufacturerName.Trim().ToLower();
 
             var manufacturer = await _dbContext.Manufacturers
-                .FirstOrDefaultAsync(x => x.Name.ToLower() == name);
+                .SingleOrDefaultAsync(x => x.Name.ToLower() == name);
 
             if (manufacturer is null)
             {
