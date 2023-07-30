@@ -1,20 +1,18 @@
 ﻿using CarShopAPI.Attributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace CarShopAPI.Models
 {
     [ValidateNever]
-
     public class Car
     {
         public int CarId { get; set; }
-        [Required, Range(1000, 9999, ErrorMessage = "Invalid year format")]
-        [CurrentYearValidation(ErrorMessage = "Invalid year format")]
+        [YearValidation(ErrorMessage = "Invalid year format")]
         public int Year { get; set; }
         [Required, Column(TypeName = "decimal(10,2)")]
         [Range(0, double.MaxValue, ErrorMessage = "Price can not be negative!")]
@@ -28,23 +26,23 @@ namespace CarShopAPI.Models
         [Required]
         public bool IsNew { get; set; }
         public int BodyTypeId { get; set; }
-        [Required, JsonIgnore]
+        [ValidateNever, JsonIgnore]
         public BodyType BodyType { get; set; }
         public int ManufacturerId { get; set; }
-        [Required, JsonIgnore]
+        [ValidateNever, JsonIgnore]
         public Manufacturer Manufacturer { get; set; }
         public int StateId { get; set; }
-        [Required, JsonIgnore]
+        [ValidateNever, JsonIgnore]
         public State State { get; set; }
         [Required]
         public string SellerId { get; set; }
         [ValidateNever, JsonIgnore]
         public ApplicationUser ApplicationUser { get; set; }
-        [ValidateNever]
-        [DisplayName("Image")]
-        [DataType(DataType.ImageUrl)]
+        [ValidateNever, DisplayName("Image"), DataType(DataType.ImageUrl)]
         public string Img_url { get; set; }
         [NotMapped, ValidateNever, JsonIgnore]
         public IFormFile ImgFile { get; set; }
+        [NotMapped, ValidateNever, JsonIgnore]
+        public string Message { get; set; }
     }
 }

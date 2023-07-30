@@ -15,11 +15,11 @@ namespace CarShopAPI.Models
         public string LastName { get; set; }
         [NotMapped, ValidateNever, JsonIgnore]
         public List<Car> Cars { get; set; }
-        [ValidateNever]
-        [DisplayName("Image")]
-        [DataType(DataType.ImageUrl)]
+        [ValidateNever, DisplayName("Image"), DataType(DataType.ImageUrl)]
         public string Img_url { get; set; }
         [NotMapped, ValidateNever, JsonIgnore]
         public IFormFile ImgFile { get; set; }
+        [NotMapped, ValidateNever, JsonIgnore]
+        public string Message { get; set; }
     }
 }

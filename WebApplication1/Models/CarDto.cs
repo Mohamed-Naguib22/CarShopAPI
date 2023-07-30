@@ -1,5 +1,6 @@
 ﻿namespace CarShopAPI.Models
 {
+
     public class CarDto
     {
         public int CarId { get; set; }

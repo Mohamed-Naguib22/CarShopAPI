@@ -3,6 +3,7 @@ using CarShopAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using CarShopAPI.Interfaces;
 using CarShopAPI.Extensions;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace CarShopAPI.Controllers
 {
@@ -27,10 +28,10 @@ namespace CarShopAPI.Controllers
         public async Task<IActionResult> GetCarByIdAsync(int carId)
         {
             var car = await _carService.GetCarByIdAsync(carId);
+
             if (car is null)
-            {
-                return NotFound(new { Message ="Car is Not Found"});
-            }
+                return NotFound("Car is not found");
+            
             var cars = await _carService.GetRelatedCarsAsync(car);
             return Ok(new { Car = car , RelatedCars = cars});
         }
@@ -39,32 +40,26 @@ namespace CarShopAPI.Controllers
         public async Task<IActionResult> AddCarAsync([FromForm] Car car)
         {
             var validationErrors = ValidationHelper<Car>.Validate(car);
-            if (validationErrors.Count != 0)
-            {
-                return BadRequest(new { validationErrors });
-            }
+            if (!string.IsNullOrEmpty(validationErrors))
+                return BadRequest(validationErrors);
 
-            var newCar = await _carService.AddCarAsync(car);
-
-            return Ok(new { Message = "Car added successfully", Car = newCar });
+            var carDto = await _carService.AddCarAsync(car);
+            return Ok(carDto);
         }
 
-        [HttpPut("{carId}")]
-        public async Task<IActionResult> UpdateCarAsync([FromForm] Car newCar, int carId)
+        [HttpPatch("{carId}")]
+        public async Task<IActionResult> UpdateCarAsync(int carId, [FromBody] JsonPatchDocument<Car> patchDocument)
         {
-            var errors = ValidationHelper<Car>.Validate(newCar);
-            if (errors.Count != 0)
-            {
-                return BadRequest(errors);
-            }
+            var car = await _carService.UpdateCarAsync(carId, patchDocument);
 
-            bool success = await _carService.UpdateCarAsync(newCar, carId);
-            if (!success)
-            {
-                return NotFound(new { Message =  "Car is Not Found" });
-            }
+            if (!string.IsNullOrEmpty(car.Message))
+                return NotFound(car.Message);
 
-            return Ok(new { Message ="Car Details Updated Successfully", Car = newCar });
+            var validationErrors = ValidationHelper<Car>.Validate(car);
+            if (!string.IsNullOrEmpty(validationErrors))
+                return BadRequest(validationErrors);
+
+            return Ok(car);
         }
 
         [HttpDelete("{carId}")]
@@ -72,10 +67,9 @@ namespace CarShopAPI.Controllers
         {
             bool success = await _carService.RemoveCarAsync(carId);
             if (!success)
-            {
-                return NotFound(new { Message = "Car is Not Found" });
-            }
-            return Ok(new { Message = "Car Removed Successfully" });
+                return NotFound("Car is Not Found");
+
+            return Ok("Car removed successfully");
         }
     }
 }

@@ -68,10 +68,20 @@ namespace CarShopAPI.Controllers
             
             return Ok(result);
         }
-        [HttpPost("email-exists")]
-        public async Task<IActionResult> EmailExistsAsyn([FromQuery] string email)
+        [HttpPost("forget-password")]
+        public async Task<IActionResult> FoegetPasswordAsync([FromQuery] string email)
         {
-            bool EmailExists = await _authService.EmailExistsAsyn(email);
+            var result = await _authService.FoegetPasswordAsync(email);
+
+            if(!string.IsNullOrEmpty(result.Message)) 
+                return BadRequest(result.Message);
+
+            return Ok(result);
+        }
+        [HttpPost("email-exists")]
+        public async Task<IActionResult> EmailExistsAsync([FromQuery] string email)
+        {
+            bool EmailExists = await _authService.EmailExistsAsync(email);
 
             return Ok(EmailExists);
         }

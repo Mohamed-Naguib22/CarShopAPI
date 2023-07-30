@@ -183,7 +183,30 @@ namespace CarShopAPI.Services
                 EmailConfirmed = user.EmailConfirmed
             };
         }
-        public async Task<bool> EmailExistsAsyn(string email)
+        public async Task<TokenModel> FoegetPasswordAsync(string email)
+        {
+            TokenModel tokenModel = new TokenModel();
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user is null)
+            {
+                tokenModel.Message = "User is not found";
+                return tokenModel;
+            }
+
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+            {
+                tokenModel.Message = "Email is not confirmed";
+                return tokenModel;
+            }
+
+            var jwtSecurityToken = await CreateJwtToken(user);
+
+            tokenModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+
+            return tokenModel;
+        }
+        public async Task<bool> EmailExistsAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             bool emailExists = ( user is not null);

@@ -3,8 +3,10 @@ using CarShopAPI.Helpers;
 using CarShopAPI.Implementation.Interfaces;
 using CarShopAPI.Interfaces;
 using CarShopAPI.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.XPath;
 
 namespace CarShopAPI.Services
 {
@@ -66,7 +68,7 @@ namespace CarShopAPI.Services
             int manufacturerId = await _manufacturerService.GetIdByNameAsync(car.Manufacturer.Name);
             string imgUrl = _carImageService.GetImageUrl(car);
 
-            var newCar = new Car
+            var carDto = new Car
             {
                 Model = car.Model,
                 Description = car.Description,
@@ -80,35 +82,20 @@ namespace CarShopAPI.Services
                 ManufacturerId = manufacturerId,
                 Img_url = imgUrl,
             };
-            await _dbContext.AddAsync(newCar);
+            await _dbContext.AddAsync(carDto);
             await _dbContext.SaveChangesAsync();
-            return newCar;
+            return carDto;
         }
-        public async Task<bool> UpdateCarAsync([FromBody] Car newCar, int carId)
+        public async Task<Car> UpdateCarAsync(int carId, JsonPatchDocument<Car> patchDocument)
         {
             var car = await _dbContext.Cars.FirstOrDefaultAsync(c => c.CarId == carId);
 
             if (car is null)
-            {
-                return false;
-            }
-            int bodyTypeId = await _bodyTypeService.GetIdByNameAsync(newCar.BodyType.Name);
-            int stateId = await _stateService.GetIdByNameAsync(newCar.State.Name);
-            int manufacturerId = await _manufacturerService.GetIdByNameAsync(newCar.Manufacturer.Name);
+                return new Car { Message = "Car is not found"};
 
-            car.Year = newCar.Year;
-            car.IsNew = newCar.IsNew;
-            car.Warranty = newCar.Warranty;
-            car.Model = newCar.Model;
-            car.Description = newCar.Description;
-            car.Price = newCar.Price;
-            car.BodyTypeId = bodyTypeId;
-            car.StateId = stateId; 
-            car.ManufacturerId = manufacturerId;
-            _carImageService.SetImage(car, newCar.ImgFile);
-
+            patchDocument.ApplyTo(car);
             await _dbContext.SaveChangesAsync();
-            return true;
+            return car;
         }
         public async Task<bool> RemoveCarAsync(int carId)
         {

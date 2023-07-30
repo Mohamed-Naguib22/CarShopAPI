@@ -40,6 +40,7 @@ namespace CarShopAPI
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICarService, CarService>();
             services.AddScoped<IYearService, YearService>();
             services.AddScoped<IEntityService<State>, StateService>();
@@ -75,7 +76,13 @@ namespace CarShopAPI
                     };
                 });
 
-            services.AddControllers();
+        services.AddControllers()
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new IgnoreJsonIgnoreResolver();
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CarShopAPI", Version = "v1" });

@@ -9,6 +9,7 @@ namespace CarShopAPI.Interfaces
         Task<AuthModel> GetTokenAsync(TokenrRequestModel model);
         Task<string> AddRoleAysnc(AddRoleModel model);
         Task<AuthModel> VerifyAsync(TokenModel tokenModel);
-        Task<bool> EmailExistsAsyn(string email);
+        Task<TokenModel> FoegetPasswordAsync(string email);
+        Task<bool> EmailExistsAsync(string email);
     }
 }

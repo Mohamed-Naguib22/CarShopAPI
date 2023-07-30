@@ -6,5 +6,6 @@ namespace CarShopAPI.Models
     {
         [Required]
         public string Token { get; set; }
+        public string Message { get; set; }
     }
 }

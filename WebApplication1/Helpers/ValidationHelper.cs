@@ -4,7 +4,7 @@ namespace CarShopAPI.Helpers
 {
     public static class ValidationHelper<T> where T : class
     {
-        public static List<string> Validate(T model)
+        public static string Validate(T model)
         {
             var modelValidationContext = new ValidationContext(model);
             var modelValidationResults = new List<ValidationResult>();
@@ -14,10 +14,11 @@ namespace CarShopAPI.Helpers
             if (!modelIsValid)
             {
                 errors = modelValidationResults.Select(r => r.ErrorMessage).ToList();
-                return errors;
+                string errorMessage = string.Join(", ", errors);
+                return errorMessage;
             }
 
-            return errors;
+            return null;
         }
     }
 }
