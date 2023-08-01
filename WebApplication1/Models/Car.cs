@@ -14,8 +14,7 @@ namespace CarShopAPI.Models
         public int CarId { get; set; }
         [YearValidation(ErrorMessage = "Invalid year format")]
         public int Year { get; set; }
-        [Required, Column(TypeName = "decimal(10,2)")]
-        [Range(0, double.MaxValue, ErrorMessage = "Price can not be negative!")]
+        [Required, Column(TypeName = "decimal(10,2)"), Range(0, double.MaxValue, ErrorMessage = "Price can not be negative!")]
         public decimal Price { get; set; }
         [Required]
         public string Model { get; set; }

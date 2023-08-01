@@ -20,18 +20,15 @@ namespace CarShopAPI.Services
                 .SingleOrDefaultAsync(x => x.Name.ToLower() == name);
 
             if (state is null)
-            {
                 return -1;
-            }
-            else
-            {
-                return state.StateId;
-            }
+
+            return state.StateId;
         }
         public async Task<List<string>> GetAllAsync()
         {
             var states = await _dbContext.States.OrderBy(x => x.Name)
                 .Select(x => x.Name).ToListAsync();
+
             return states;
         }
     }

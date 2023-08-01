@@ -20,15 +20,15 @@ namespace CarShopAPI.Services
                 .SingleOrDefaultAsync(x => x.Name.ToLower() == name);
 
             if (bodyType is null)
-            {
-                return -1;
-            }
+            return -1;
+
             return bodyType.BodyTypeId;
         }
         public async Task<List<string>> GetAllAsync()
         {
             var bodyTypes = await _dbContext.BodyTypes.OrderBy(x => x.Name)
                 .Select(x => x.Name).ToListAsync();
+
             return bodyTypes;
         }
     }

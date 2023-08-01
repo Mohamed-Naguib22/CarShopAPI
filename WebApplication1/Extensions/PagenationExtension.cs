@@ -1,8 +1,11 @@
-﻿namespace CarShopAPI.Extensions
+﻿using CarShopAPI.Models;
+using System.Linq.Expressions;
+
+namespace CarShopAPI.Extensions
 {
     public static class PagenationExtension
     {
-        public static IEnumerable<T> Pagenate<T>(this IEnumerable<T> source, int page, int size) where T : class 
+        public static IEnumerable<T> Paginate<T>(this IEnumerable<T> source, int page, int size) where T : class 
         {
             if (page <= 0) 
             {

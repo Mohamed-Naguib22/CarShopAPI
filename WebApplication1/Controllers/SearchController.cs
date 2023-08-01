@@ -21,6 +21,10 @@ namespace CarShopAPI.Controllers
         [HttpGet("{pageNumber}")]
         public async Task<IActionResult> Filter([FromBody] CarFilter filter, int pageNumber)
         {
+            var validationErrors = ValidationHelper<CarFilter>.Validate(filter);
+            if (!string.IsNullOrEmpty(validationErrors))
+                return BadRequest(validationErrors);
+
             var filteredCars = await _searchService.Filter(filter, pageNumber);
             return Ok(filteredCars);
         }

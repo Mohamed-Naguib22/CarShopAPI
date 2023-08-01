@@ -1,9 +1,10 @@
 ﻿using CarShopAPI.Interfaces;
 using CarShopAPI.Models;
+using CarShopAPI.Services.Search;
 
 namespace CarShopAPI.Filters
 {
-    public class ManufacturerFilterStrategy : ICarFilterStrategy
+    public class ManufacturerFilterStrategy : IFilterStrategy
     {
         private readonly string _manufacturer;
         public ManufacturerFilterStrategy(string manufacturer)

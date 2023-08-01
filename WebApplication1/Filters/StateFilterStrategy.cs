@@ -1,9 +1,10 @@
 ﻿using CarShopAPI.Interfaces;
 using CarShopAPI.Models;
+using CarShopAPI.Services.Search;
 
 namespace CarShopAPI.Filters
 {
-    public class StateFilterStrategy : ICarFilterStrategy
+    public class StateFilterStrategy : IFilterStrategy
     {
         private readonly string _state;
         public StateFilterStrategy(string state)

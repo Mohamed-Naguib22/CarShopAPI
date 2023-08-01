@@ -1,9 +1,10 @@
 ﻿using CarShopAPI.Interfaces;
 using CarShopAPI.Models;
+using CarShopAPI.Services.Search;
 
 namespace CarShopAPI.Filters
 {
-    public class YearFilterStrategy : ICarFilterStrategy
+    public class YearFilterStrategy : IFilterStrategy
     {
         private readonly int _year;
         public YearFilterStrategy(int year)

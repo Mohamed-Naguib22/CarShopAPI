@@ -1,9 +1,10 @@
 ﻿using CarShopAPI.Interfaces;
 using CarShopAPI.Models;
+using CarShopAPI.Services.Search;
 
 namespace CarShopAPI.Filters
 {
-    public class IsNewFilterStrategy : ICarFilterStrategy
+    public class IsNewFilterStrategy : IFilterStrategy
     {
         private readonly bool _isNew;
         public IsNewFilterStrategy(bool isNew)

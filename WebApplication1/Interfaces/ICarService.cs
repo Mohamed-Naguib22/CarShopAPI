@@ -11,7 +11,5 @@ namespace CarShopAPI.Interfaces
         Task<Car> AddCarAsync(Car car);
         Task<Car> UpdateCarAsync(int carId, JsonPatchDocument<Car> patchDocument);
         Task<bool> RemoveCarAsync(int carId);
-        IQueryable<Car> GetCarsWithRelatedEntities();
-        Task<IEnumerable<CarDto>> GetRelatedCarsAsync(CarDto car);
     }
 }

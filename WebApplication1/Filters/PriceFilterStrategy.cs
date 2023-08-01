@@ -1,9 +1,10 @@
 ﻿using CarShopAPI.Interfaces;
 using CarShopAPI.Models;
+using CarShopAPI.Services.Search;
 
 namespace CarShopAPI.Filters
 {
-    public class PriceFilterStrategy : ICarFilterStrategy
+    public class PriceFilterStrategy : IFilterStrategy
     {
         private readonly decimal _price;
         public PriceFilterStrategy(decimal price)
