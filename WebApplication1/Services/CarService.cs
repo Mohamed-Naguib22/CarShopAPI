@@ -22,7 +22,6 @@ namespace CarShopAPI.Services
             _manufacturerService = manufacturerService;
             _stateService = stateService;
             _carImageService = carImageService;
-            _carImageService = carImageService;
         }
         private async Task<IEnumerable<CarDto>> GetRelatedCarsAsync(CarDto car)
         {
