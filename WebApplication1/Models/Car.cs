@@ -8,7 +8,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CarShopAPI.Models
 {
-    [ValidateNever]
     public class Car
     {
         public int CarId { get; set; }
@@ -25,17 +24,17 @@ namespace CarShopAPI.Models
         [Required]
         public bool IsNew { get; set; }
         public int BodyTypeId { get; set; }
-        [ValidateNever, JsonIgnore]
+        [NotMapped, ValidateNever, JsonIgnore]
         public BodyType BodyType { get; set; }
         public int ManufacturerId { get; set; }
-        [ValidateNever, JsonIgnore]
+        [NotMapped, ValidateNever, JsonIgnore]
         public Manufacturer Manufacturer { get; set; }
         public int StateId { get; set; }
-        [ValidateNever, JsonIgnore]
+        [NotMapped, ValidateNever, JsonIgnore]
         public State State { get; set; }
         [Required]
         public string SellerId { get; set; }
-        [ValidateNever, JsonIgnore]
+        [NotMapped, ValidateNever, JsonIgnore]
         public ApplicationUser ApplicationUser { get; set; }
         [ValidateNever, DisplayName("Image"), DataType(DataType.ImageUrl)]
         public string Img_url { get; set; }

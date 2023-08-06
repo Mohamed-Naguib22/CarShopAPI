@@ -19,7 +19,7 @@ namespace CarShopAPI.Data
                 .WithMany(u => u.Cars)
                 .HasForeignKey(c => c.SellerId);
 
-            base.OnModelCreating(modelBuilder);
+			base.OnModelCreating(modelBuilder);
         }
 
         public DbSet<Car> Cars { get; set; }

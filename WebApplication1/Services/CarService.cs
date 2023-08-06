@@ -22,7 +22,6 @@ namespace CarShopAPI.Services
             _manufacturerService = manufacturerService;
             _stateService = stateService;
             _carImageService = carImageService;
-            _carImageService = carImageService;
         }
         private async Task<IEnumerable<CarDto>> GetRelatedCarsAsync(CarDto car)
         {
@@ -53,32 +52,18 @@ namespace CarShopAPI.Services
 
         public async Task<Car> AddCarAsync(Car car)
         {
-            var validationErrors = ValidationHelper<Car>.Validate(car);
-            if (!string.IsNullOrEmpty(validationErrors))
-                return new Car { Message = validationErrors };
+			var validationErrors = ValidationHelper<Car>.Validate(car);
+			if (!string.IsNullOrEmpty(validationErrors))
+				return new Car { Message = validationErrors };
 
-            int bodyTypeId = await _bodyTypeService.GetIdByNameAsync(car.BodyType.Name);
-            int stateId = await _stateService.GetIdByNameAsync(car.State.Name);
-            int manufacturerId = await _manufacturerService.GetIdByNameAsync(car.Manufacturer.Name);
-            string imgUrl = _carImageService.GetImageUrl(car);
+			_carImageService.SetImage(car, car.ImgFile);
+            car.ManufacturerId = await _manufacturerService.GetIdByNameAsync(car.Manufacturer.Name);
+			car.StateId = await _stateService.GetIdByNameAsync(car.State.Name);
+			car.BodyTypeId = await _bodyTypeService.GetIdByNameAsync(car.BodyType.Name);
 
-            var addedCar = new Car
-            {
-                Model = car.Model,
-                Description = car.Description,
-                Year = car.Year,
-                Price = car.Price,
-                IsNew = car.IsNew,
-                Warranty = car.Warranty,
-                SellerId = car.SellerId,
-                BodyTypeId = bodyTypeId,
-                StateId = stateId,
-                ManufacturerId = manufacturerId,
-                Img_url = imgUrl,
-            };
-            await _dbContext.AddAsync(addedCar);
+			await _dbContext.Cars.AddAsync(car);
             await _dbContext.SaveChangesAsync();
-            return addedCar;
+            return car;
         }
         public async Task<Car> UpdateCarAsync(int carId, JsonPatchDocument<Car> patchDocument)
         {

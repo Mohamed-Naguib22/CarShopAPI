@@ -1,4 +1,6 @@
-﻿using Microsoft.Build.Framework;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.Build.Framework;
+using Newtonsoft.Json;
 
 namespace CarShopAPI.Models
 {
@@ -6,6 +8,7 @@ namespace CarShopAPI.Models
     {
         [Required]
         public string Token { get; set; }
+        [JsonIgnore, ValidateNever]
         public string Message { get; set; }
     }
 }

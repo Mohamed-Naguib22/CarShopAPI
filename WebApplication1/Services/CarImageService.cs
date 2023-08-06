@@ -9,28 +9,6 @@ namespace CarShopAPI.Services
         {
             _webHostEnvironment = webHostEnvironment;
         }
-
-        public string GetImageUrl(Car car)
-        {
-            if (car.ImgFile == null)
-            {
-                return "\\images\\No_Image.png";
-            }
-            else
-            {
-                string imgExtension = Path.GetExtension(car.ImgFile.FileName);
-                Guid imgGuid = Guid.NewGuid();
-                string imgName = imgGuid + imgExtension;
-                string imgUrl = "\\images\\" + imgName;
-                
-                string imgPath = _webHostEnvironment.WebRootPath + imgUrl;
-                using (var imgStream = new FileStream(imgPath, FileMode.Create))
-                {
-                    car.ImgFile.CopyTo(imgStream);
-                }
-                return car.Img_url = imgUrl;
-            }
-        }
         public void SetImage(Car car, IFormFile? imgFile)
         {
             if (imgFile == null)

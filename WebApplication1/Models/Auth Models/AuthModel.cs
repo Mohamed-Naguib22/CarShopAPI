@@ -1,7 +1,10 @@
-﻿namespace CarShopAPI.Models
+﻿using Newtonsoft.Json;
+
+namespace CarShopAPI.Models
 {
     public class AuthModel
     {
+        [JsonIgnore]
         public string Message { get; set; }
         public bool IsAuthenticated { get; set; }
         public bool EmailConfirmed { get; set; }

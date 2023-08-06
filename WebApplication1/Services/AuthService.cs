@@ -4,8 +4,6 @@ using CarShopAPI.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using NuGet.Common;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -65,9 +63,7 @@ namespace CarShopAPI.Services
                 return "Invalid user ID or Role";
 
             if(await _userManager.IsInRoleAsync(user, model.Role))
-            {
                 return "User already assigned to this role";
-            }
 
             var result = await _userManager.AddToRoleAsync(user, model.Role);
             
@@ -77,14 +73,10 @@ namespace CarShopAPI.Services
         public async Task<AuthModel> RegisterAysnc(RegisterModel model)
         {
             if (await _userManager.FindByEmailAsync(model.Email) is not null)
-            {
                 return new AuthModel { Message = "Email is already registered!" };
-            }
 
             if (await _userManager.FindByEmailAsync(model.Username) is not null)
-            {
                 return new AuthModel { Message = "Username is already registered!" };
-            }
 
             var user = new ApplicationUser
             {
@@ -114,73 +106,58 @@ namespace CarShopAPI.Services
             return new AuthModel
             {
                 Email = user.Email,
-                ExpiresOn = jwtSecurityToken.ValidTo,
-                IsAuthenticated = true,
-                Roles = new List<string> { "User" },
-                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-                Username = user.UserName
-            };
+                Username = user.UserName,
+				IsAuthenticated = true,
+				Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+				ExpiresOn = jwtSecurityToken.ValidTo,
+				Roles = new List<string> { "User" },
+			};
         }
         public async Task<AuthModel> GetTokenAsync(TokenrRequestModel model)
         {
-            var authModel = new AuthModel();
+			var user = await _userManager.FindByEmailAsync(model.Email);
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+			if (user is null || !await _userManager.CheckPasswordAsync(user, model.Password))
+				return new AuthModel { Message = "Email or Password is incorrect" };
 
-            if (user is null || !await _userManager.CheckPasswordAsync(user, model.Password))
-            {
-                authModel.Message = "Email or Password is incorrect";
-                return authModel;
-            }
+			var jwtSecurityToken = await CreateJwtToken(user);
+			var rolesList = await _userManager.GetRolesAsync(user);
 
-            var jwtSecurityToken = await CreateJwtToken(user);
-            var rolesList = await _userManager.GetRolesAsync(user);
-
-            authModel.IsAuthenticated = true;
-            authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-            authModel.Email = user.Email;
-            authModel.Username = user.UserName;
-            authModel.ExpiresOn = jwtSecurityToken.ValidTo;
-            authModel.Roles = rolesList.ToList();
-
-            return authModel;
-        }
+			return new AuthModel
+			{
+				Email = user.Email,
+				Username = user.UserName,
+				EmailConfirmed = user.EmailConfirmed,
+				IsAuthenticated = true,
+				Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+				ExpiresOn = jwtSecurityToken.ValidTo,
+				Roles = rolesList.ToList()
+			};
+		}
         public async Task<AuthModel> VerifyAsync(TokenModel tokenModel)
         {
-            AuthModel authModel = new AuthModel();
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(tokenModel.Token) as JwtSecurityToken;
 
             var userId = jsonToken.Claims.FirstOrDefault(c => c.Type == "uid")?.Value;
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                authModel.Message = "Invalid token. User ID not found.";
-                return authModel;
-            }
-
             var user = await _userManager.FindByIdAsync(userId);
 
-            if (user == null)
-            {
-                authModel.Message = "User not found.";
-                return authModel;
-            }
+			if (user is null)
+				return new AuthModel { Message = "User not found." };
+			
+            var rolesList = await _userManager.GetRolesAsync(user);
 
-            user.EmailConfirmed = true;
+			if (user.EmailConfirmed)
+				return new AuthModel { Message = "Email is already confirmed." };
+
+			user.EmailConfirmed = true;
             var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
-            {
-                authModel.Message = "Failed to update user.";
-                return authModel;
-            }
+				return new AuthModel { Message = "Failed to update user data." };
 
             return new AuthModel
             {
-                Email = user.Email,
-                Username = user.UserName,
-                EmailConfirmed = user.EmailConfirmed
             };
         }
         public async Task<TokenModel> FoegetPasswordAsync(string email)
@@ -189,27 +166,18 @@ namespace CarShopAPI.Services
             var user = await _userManager.FindByEmailAsync(email);
 
             if (user is null)
-            {
-                tokenModel.Message = "User is not found";
-                return tokenModel;
-            }
+				return new TokenModel { Message = "User is not found" };
 
             if (!await _userManager.IsEmailConfirmedAsync(user))
-            {
-                tokenModel.Message = "Email is not confirmed";
-                return tokenModel;
-            }
+				return new TokenModel { Message = "Email is not confirmed" };
 
             var jwtSecurityToken = await CreateJwtToken(user);
-
-            tokenModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-
-            return tokenModel;
+            return new TokenModel { Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken) };
         }
         public async Task<bool> EmailExistsAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            bool emailExists = ( user is not null);
+            bool emailExists =  user is not null;
             return emailExists;
         }
     }

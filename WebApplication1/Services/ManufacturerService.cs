@@ -19,12 +19,10 @@ namespace CarShopAPI.Services
             var manufacturer = await _dbContext.Manufacturers
                 .SingleOrDefaultAsync(x => x.Name.ToLower() == name);
 
-            if (manufacturer is null)
-                return -1;
+			return manufacturer?.ManufacturerId ?? -1;
 
-            return manufacturer.ManufacturerId;
-        }
-        public async Task<List<string>> GetAllAsync()
+		}
+		public async Task<List<string>> GetAllAsync()
         {
             var manufacturers = await _dbContext.Manufacturers.OrderBy(x => x.Name)
                 .Select(x => x.Name).ToListAsync();

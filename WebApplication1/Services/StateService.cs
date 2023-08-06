@@ -19,12 +19,9 @@ namespace CarShopAPI.Services
             var state = await _dbContext.States
                 .SingleOrDefaultAsync(x => x.Name.ToLower() == name);
 
-            if (state is null)
-                return -1;
-
-            return state.StateId;
-        }
-        public async Task<List<string>> GetAllAsync()
+			return state?.StateId ?? -1;
+		}
+		public async Task<List<string>> GetAllAsync()
         {
             var states = await _dbContext.States.OrderBy(x => x.Name)
                 .Select(x => x.Name).ToListAsync();

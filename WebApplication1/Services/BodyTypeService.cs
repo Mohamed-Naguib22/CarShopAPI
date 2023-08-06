@@ -12,6 +12,7 @@ namespace CarShopAPI.Services
         {
             _dbContext = dbContext;
         }
+
         public async Task<int> GetIdByNameAsync(string bodyTypeName)
         {
             var name = bodyTypeName.Trim().ToLower();
@@ -19,12 +20,9 @@ namespace CarShopAPI.Services
             var bodyType = await _dbContext.BodyTypes
                 .SingleOrDefaultAsync(x => x.Name.ToLower() == name);
 
-            if (bodyType is null)
-            return -1;
-
-            return bodyType.BodyTypeId;
-        }
-        public async Task<List<string>> GetAllAsync()
+			return bodyType?.BodyTypeId ?? -1;
+		}
+		public async Task<List<string>> GetAllAsync()
         {
             var bodyTypes = await _dbContext.BodyTypes.OrderBy(x => x.Name)
                 .Select(x => x.Name).ToListAsync();
