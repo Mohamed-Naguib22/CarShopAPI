@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Xml.XPath;
 
 namespace CarShopAPI.Controllers
 {
@@ -29,12 +30,14 @@ namespace CarShopAPI.Controllers
             _userService = userService;
         }
         [HttpPut("{userId}")]
-        public async Task<IActionResult> SetImage([FromForm] IFormFile? imgFile, string userId)
+        public async Task<IActionResult> SetImageAsync([FromForm] IFormFile? imgFile, string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            _userImageService.SetImage(user, imgFile);
-            _dbContext.SaveChanges();
-            return Ok(new { Message = "Image has been set successsfully" });
+            var user = await _userService.SetImageAsync(imgFile, userId);
+
+            if (!string.IsNullOrEmpty(user.Message))
+                return BadRequest(user.Message);
+
+            return Ok(user);
         }
         [HttpPatch("{userId}")]
         public async Task<IActionResult> UpdateUserAsync(string userId, [FromBody] JsonPatchDocument<ApplicationUser> patchDocument)

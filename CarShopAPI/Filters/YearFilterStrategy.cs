@@ -6,10 +6,14 @@ namespace CarShopAPI.Filters
 {
     public class YearFilterStrategy : IFilterStrategy
     {
-        private readonly int _year;
-        public YearFilterStrategy(int year)
+        private readonly int? _year;
+        public YearFilterStrategy(int? year)
         {
             _year = year;
+        }
+        public bool CanApply(CarFilter filter)
+        {
+            return filter.Year.HasValue;
         }
         public IQueryable<CarDto> ApplyFilter(IQueryable<CarDto> query)
         {

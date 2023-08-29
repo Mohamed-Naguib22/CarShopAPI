@@ -7,10 +7,14 @@ namespace CarShopAPI.Filters
 {
     public class BodyTypeFilterStrategy : IFilterStrategy
     {
-        private readonly string _bodyType;
-        public BodyTypeFilterStrategy(string bodyType)
+        private readonly string? _bodyType;
+        public BodyTypeFilterStrategy(string ?bodyType)
         {
             _bodyType = bodyType;
+        }
+        public bool CanApply(CarFilter filter)
+        {
+            return !string.IsNullOrEmpty(filter.BodyType);
         }
         public IQueryable<CarDto> ApplyFilter(IQueryable<CarDto> query)
         {

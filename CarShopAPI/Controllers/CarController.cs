@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using CarShopAPI.Interfaces;
 using CarShopAPI.Extensions;
 using Microsoft.AspNetCore.JsonPatch;
+using CarShopAPI.Services;
 
 namespace CarShopAPI.Controllers
 {
@@ -62,6 +63,16 @@ namespace CarShopAPI.Controllers
                 return NotFound("Car is Not Found");
 
             return Ok("Car removed successfully");
+        }
+        [HttpPut("{carId}")]
+        public async Task<IActionResult> SetImageAsync([FromForm] IFormFile? imgFile, int carId)
+        {
+            var user = await _carService.SetImageAsync(imgFile, carId);
+
+            if (!string.IsNullOrEmpty(user.Message))
+                return BadRequest(user.Message);
+
+            return Ok(user);
         }
     }
 }

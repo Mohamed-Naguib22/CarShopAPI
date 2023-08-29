@@ -5,12 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarShopAPI.Services
 {
-    public class BodyTypeService : IEntityService<BodyType>
+    public class BodyTypeService : BaseService, IEntityService<BodyType>
     {
-        private readonly ApplicationDbContext _dbContext;
-        public BodyTypeService(ApplicationDbContext dbContext)
+        public BodyTypeService(ApplicationDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
         }
 
         public async Task<int> GetIdByNameAsync(string bodyTypeName)

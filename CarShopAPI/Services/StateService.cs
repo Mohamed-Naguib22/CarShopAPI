@@ -5,12 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarShopAPI.Services
 {
-    public class StateService : IEntityService<State>
+    public class StateService : BaseService, IEntityService<State>
     {
-        private readonly ApplicationDbContext _dbContext;
-        public StateService(ApplicationDbContext dbContext)
+        public StateService(ApplicationDbContext dbContext) : base(dbContext)
         {
-           _dbContext = dbContext;
         }
         public async Task<int> GetIdByNameAsync(string stateName)
         {

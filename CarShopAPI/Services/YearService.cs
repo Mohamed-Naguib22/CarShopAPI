@@ -4,12 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarShopAPI.Services
 {
-    public class YearService : IYearService
+    public class YearService : BaseService, IYearService
     {
-        private readonly ApplicationDbContext _dbContext;
-        public YearService(ApplicationDbContext dbContext)
+        public YearService(ApplicationDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
         }
         public IQueryable<int> GetYears()
         {

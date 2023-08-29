@@ -93,5 +93,17 @@ namespace CarShopAPI.Services
             await _dbContext.SaveChangesAsync();
             return true;
         }
+        public async Task<Car> SetImageAsync(IFormFile? imgFile, int carId)
+        {
+            var car = await _dbContext.Cars.FirstOrDefaultAsync(c => c.CarId == carId);
+
+            if (car is null)
+                return new Car { Message = "Car is not found" };
+
+            _carImageService.SetImage(car, imgFile);
+
+            await _dbContext.SaveChangesAsync();
+            return car;
+        }
     }
 }

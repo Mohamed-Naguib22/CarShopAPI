@@ -1,9 +1,7 @@
 ﻿using CarShopAPI.Data;
 using CarShopAPI.Extensions;
-using CarShopAPI.Helpers;
 using CarShopAPI.Interfaces;
 using CarShopAPI.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarShopAPI.Services.Search
@@ -18,7 +16,7 @@ namespace CarShopAPI.Services.Search
         }
         public async Task<IEnumerable<CarDto>> Filter(CarFilter filter, int pageNumber)
         {
-                var query = MapCarToDto();
+            var query = MapCarToDto();
 
             if (filter is not null)
             {
@@ -30,7 +28,9 @@ namespace CarShopAPI.Services.Search
             }
 
             var filteredCars = await query.ToListAsync();
-            return filteredCars.Paginate(pageNumber, 10);
+            var paginatedCars = filteredCars.Paginate(pageNumber, 10);
+            
+            return paginatedCars;
         }
     }
 }

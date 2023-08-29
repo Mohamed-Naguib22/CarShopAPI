@@ -6,10 +6,14 @@ namespace CarShopAPI.Filters
 {
     public class StateFilterStrategy : IFilterStrategy
     {
-        private readonly string _state;
-        public StateFilterStrategy(string state)
+        private readonly string? _state;
+        public StateFilterStrategy(string? state)
         {
             _state = state;
+        }
+        public bool CanApply(CarFilter filter)
+        {
+            return !string.IsNullOrEmpty(filter.State);
         }
         public IQueryable<CarDto> ApplyFilter(IQueryable<CarDto> query)
         {

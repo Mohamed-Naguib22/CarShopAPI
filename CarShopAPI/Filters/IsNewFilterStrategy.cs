@@ -6,10 +6,14 @@ namespace CarShopAPI.Filters
 {
     public class IsNewFilterStrategy : IFilterStrategy
     {
-        private readonly bool _isNew;
-        public IsNewFilterStrategy(bool isNew)
+        private readonly bool? _isNew;
+        public IsNewFilterStrategy(bool? isNew)
         {
             _isNew = isNew;
+        }
+        public bool CanApply(CarFilter filter)
+        {
+            return filter.IsNew.HasValue;
         }
         public IQueryable<CarDto> ApplyFilter(IQueryable<CarDto> query)
         {

@@ -1,6 +1,5 @@
 ﻿using CarShopAPI.Models;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CarShopAPI.Interfaces
 {
@@ -11,5 +10,6 @@ namespace CarShopAPI.Interfaces
         Task<Car> AddCarAsync(Car car);
         Task<Car> UpdateCarAsync(int carId, JsonPatchDocument<Car> patchDocument);
         Task<bool> RemoveCarAsync(int carId);
+        Task<Car> SetImageAsync(IFormFile? imgFile, int carId);
     }
 }

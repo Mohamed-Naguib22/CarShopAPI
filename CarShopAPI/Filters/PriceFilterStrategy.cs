@@ -6,10 +6,14 @@ namespace CarShopAPI.Filters
 {
     public class PriceFilterStrategy : IFilterStrategy
     {
-        private readonly decimal _price;
-        public PriceFilterStrategy(decimal price)
+        private readonly decimal? _price;
+        public PriceFilterStrategy(decimal? price)
         {
             _price = price;
+        }
+        public bool CanApply(CarFilter filter)
+        {
+            return filter.Price.HasValue;
         }
         public IQueryable<CarDto> ApplyFilter(IQueryable<CarDto> query)
         {

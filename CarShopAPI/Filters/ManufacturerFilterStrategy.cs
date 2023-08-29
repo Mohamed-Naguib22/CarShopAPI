@@ -6,10 +6,14 @@ namespace CarShopAPI.Filters
 {
     public class ManufacturerFilterStrategy : IFilterStrategy
     {
-        private readonly string _manufacturer;
-        public ManufacturerFilterStrategy(string manufacturer)
+        private readonly string? _manufacturer;
+        public ManufacturerFilterStrategy(string? manufacturer)
         {
             _manufacturer = manufacturer;
+        }
+        public bool CanApply(CarFilter filter)
+        {
+            return !string.IsNullOrEmpty(filter.Manufacturer);
         }
         public IQueryable<CarDto> ApplyFilter(IQueryable<CarDto> query)
         {
